@@ -43,7 +43,7 @@ We utilized observations of biodiversity in Los Angeles County that were sourced
 We began by loading in EJScreen data and filtering it to Los Angeles County.
 ```{r }
 #read in geodatabase of EJScreen data at the Census Block Group level
-ejscreen <- st_read("./data/EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb/") 
+ejscreen <- st_read("./data/EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb") 
 
 #filter ejscreen data to LA county
 unique(ejscreen$CNTY_NAME)
@@ -79,6 +79,10 @@ map1 <- ggplot() +
          color = guide_legend(order = 2))
 
 map1
+
+# save figure
+ggsave("figures/la_wastewater_discharge_map.png", map1, width = 8, height = 6, units = "in")
+
 ```
 
 We then investigated which census block groups have less than 5% of their populations considered as low-income.
@@ -110,7 +114,8 @@ Next, we investigated historic redlining in Los Angeles county. The HOLC grades 
 ```{r}
 #load redlining data
 LA_redlining <- st_read("https://dsl.richmond.edu/panorama/redlining/static/citiesData/CALosAngeles1939/geojson.json") %>%
-  st_make_valid()
+  st_make_valid() %>% 
+  drop_na()
 
 ```
 
@@ -129,6 +134,9 @@ map2 <- ggplot() +
   theme_minimal()
 
 map2
+
+# save figure
+ggsave("figures/la_holc_grades_map.png", map2, width = 8, height = 6, units = "in")
 ```
 
 We then calculated the number of census block groups that fall within areas with HOLC grades.
@@ -186,7 +194,7 @@ table1 <- bg_holc_summary %>%
   kable_minimal()
 
 table1
-# kable(x = bg_holc_summary , col.names = c("HOLC Grade", "% Low Income", "PM 2.5 Percentile", "Low Life Expectancy Percentile", "Air Toxics Cancer Risk Percentile"), caption = "Mean values of 4 EJScreen Indicators within each HOLC grade.")
+
 ```
 Results show that the mean values of all four EJScreen indicators we investigated increase with decreasing HOLC grades. Individuals in lower HOLC grades are exposed to higher amounts of environmental toxins (e.g., as PM 2.5) and characterized by higher health risks (e.g., risk of cancer from air toxics and lower life expectancy). HOLC grades also have a negative correlation with low income, where lower HOLC grades have a higher percent of low income households.
 
@@ -217,19 +225,22 @@ total_n <- length(birds_redlining_2022$obs)
 
 #summarize percent of bird observations by HOLC grade category
 birds_redlining_summary <- birds_redlining_2022 %>% 
-  group_by(holc_grade) %>% 
+  group_by(grade) %>% 
   summarize(perc = ((sum(obs)/ total_n))*100) %>% 
   st_drop_geometry()
 
 #plot
 plot1 <- ggplot(data = birds_redlining_summary) +
-  geom_col(aes(x = holc_grade, y = perc, fill = holc_grade)) +
-  geom_text(aes(x = holc_grade, y = perc, label = round(as.numeric(perc))),vjust = -0.5)+
+  geom_col(aes(x = grade, y = perc, fill = grade)) +
+  geom_text(aes(x = grade, y = perc, label = round(as.numeric(perc))),vjust = -0.5)+
   scale_fill_manual(values = c("#9C964A", "#F3DF6C", "#DC863B", "#C93312"))+
-  labs(y = "Percent of Total Observations (%)", x = "HOLC \nGrade", title = "Percent of Bird Observations in 2022 by HOLC Grade Category", fill = "HOLC Grade")+
+  labs(y = "Percent of Total Observations (%)", x = "HOLC Grade", title = "Percent of Bird Observations in 2022 by HOLC Grade Category", fill = "HOLC Grade")+
   theme_minimal()
 
 plot1
+
+# save figure
+ggsave("figures/la_holc_bird_observations.png", plot1, width = 8, height = 6, units = "in")
 ```
 
 Results show that the majority of bird observations in 2022 occurred in neighborhoods within HOLC grades C and D (36% and 29% respectively). These results are surprising because we expected fewer bird observations from citizen scientists in disadvantaged communities (DAC), as DAC individuals have less resources and time compared to wealthier individuals who live in neighborhoods within HOLC grades A and B. The higher amount of observations that occurred in DAC could imply that there is bias in the data collection methods - it's possible that researchers, scientists, or organizations focused additional effort in reporting bird sightings within those neighborhoods to document or combat the known environmental and educational disparities. It is also possible that communities within HOLC grades C and D are less developed and therefore contain higher amounts of natural habitats that birds and bird watchers.
