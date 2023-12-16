@@ -1,6 +1,6 @@
-# Historical redlining in Los Angeles County
+# Environmental justice impacts of historical redlining in Los Angeles County
 
-This repository contains an analysis 
+This repository contains an analysis of community characteristics at the census block group level in Los Angeles County. In this analysis, we summarize and visualize present-day environmental and health hazards across space and determine whether the patterns share a relationship with two additional variables: historic Home Owners' Loan Corporation (HOLC) grades and 2022 bird observations. This analysis indicates that HOLC grades and the historic practice of redlining have influenced the socioeconomic and environmental characteristics of present-day neighborhoods, which aligns with the literature.
 
 The structure and contents of the repository are shown below:
 
@@ -28,7 +28,7 @@ The structure and contents of the repository are shown below:
 
 ### Data
 
-The data used in this analysis are too large to include in the repository and instead can be downloaded from [here](). The data sources are described below:
+The data used in this analysis are too large to include in the repository and instead can be downloaded from [here](https://drive.google.com/file/d/1lcazRbNSmP8Vj9sH1AIJcO4D1d_ulJij/view?usp=share_link). The data sources are described below:
 
 #### *EJScreen*
 
